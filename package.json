@@ -1,0 +1,20 @@
+{
+  "name": "pricefirst-bdd-automation",
+  "version": "1.0.0",
+  "description": "BDD Automation for PriceFirst with Playwright + Cucumber",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:headed": "HEADLESS=false cucumber-js",
+    "test:report": "cucumber-js --format html:reports/report.html",
+    "test:search": "cucumber-js features/search/**",
+    "test:offers": "cucumber-js features/offers/**",
+    "test:nav": "cucumber-js features/navigation/**",
+    "test:errors": "cucumber-js features/error/**",
+    "test:checkout": "cucumber-js features/checkout/**"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.3.0",
+    "@playwright/test": "^1.42.0",
+    "playwright": "^1.42.0"
+  }
+}

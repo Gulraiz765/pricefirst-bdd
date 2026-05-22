@@ -1,0 +1,16 @@
+{
+  "searchKeywords": [
+    { "keyword": "iPhone 13", "expectedBrand": "Apple" },
+    { "keyword": "iPhone 14", "expectedBrand": "Apple" },
+    { "keyword": "Samsung Galaxy S22", "expectedBrand": "Samsung" },
+    { "keyword": "Google Pixel 7", "expectedBrand": "Google" }
+  ],
+  "collections": [
+    { "name": "iPhones", "url": "/collections/iphones" },
+    { "name": "Samsung Phones", "url": "/collections/samsung-phones" },
+    { "name": "Google Pixel", "url": "/collections/google-pixel" },
+    { "name": "Gaming Console", "url": "/collections/gaming-console" }
+  ],
+  "conditions": ["Good", "Poor", "Faulty"],
+  "invalidEmails": ["notanemail", "missing@", "@nodomain.com"]
+}
