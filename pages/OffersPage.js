@@ -116,13 +116,13 @@ class OffersPage {
       if (btn) btn.scrollIntoView({ block: 'center' });
     });
     await this.page.waitForTimeout(500);
-
+       
     return sellNowBtn;
   }
 
   async getTopOfferPrice() {
     await this.page.waitForTimeout(800);
-
+b
     // Strategy 1: Highest Price Offer badge
     try {
       const badge = this.page.locator(':text("Highest Price Offer")');

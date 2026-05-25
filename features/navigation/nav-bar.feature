@@ -24,11 +24,10 @@ Feature: Navigation & Search Functionality
     When I click on the page body
     Then the search dropdown should not be visible
 
-  @NAV-08
-  Scenario: Logo click returns to homepage
-    When I type "iPhone" in the search bar
-    And I click on the first suggestion
-    And I click the PriceFirst logo
-    Then I should be on the home 
-  
+ @NAV-08
+Scenario: Logo click returns to homepage
+  When I type "iPhone" in the search bar
+  And I click on the first suggestion
+  And I click the PriceFirst logo
+  Then I should be on the home page
 

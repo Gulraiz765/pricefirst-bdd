@@ -81,8 +81,9 @@ Then('the page title should indicate an error', async function () {
   console.log(`✅ Page indicates an error state`);
 });
 
-When('I click the "Return to Home" button', async function () {
-  console.log('🔘 Clicking Return to Home button...');
+// FIXED: New specific step for 404 page button (avoids conflict with generic button clicker)
+When('I click the 404 page {string} button', async function (buttonText) {
+  console.log(`🔘 Clicking "${buttonText}" button on 404 page...`);
   
   const returnHomeButton = this.page.locator('body > div.min-h-screen.bg-white.lg\\:rounded-t-6xl > div > div > button');
   
@@ -91,15 +92,15 @@ When('I click the "Return to Home" button', async function () {
   if (await returnHomeButton.count() > 0 && await returnHomeButton.isVisible().catch(() => false)) {
     await returnHomeButton.click();
     clicked = true;
-    console.log(`✅ Clicked "Return to Home" button using exact selector`);
+    console.log(`✅ Clicked "${buttonText}" button using exact selector`);
   }
   
   if (!clicked) {
-    const button = this.page.locator('button:has-text("Return to Home")').first();
+    const button = this.page.locator(`button:has-text("${buttonText}")`).first();
     if (await button.count() > 0 && await button.isVisible().catch(() => false)) {
       await button.click();
       clicked = true;
-      console.log(`✅ Clicked "Return to Home" button using text selector`);
+      console.log(`✅ Clicked "${buttonText}" button using text selector`);
     }
   }
   
@@ -112,7 +113,7 @@ When('I click the "Return to Home" button', async function () {
     }
   }
   
-  expect(clicked, `Could not find or click "Return to Home" button`).toBeTruthy();
+  expect(clicked, `Could not find or click "${buttonText}" button`).toBeTruthy();
   
   await this.page.waitForLoadState('networkidle');
   await this.page.waitForTimeout(3000);

@@ -16,8 +16,6 @@ Feature: TC-06 Error Handling - 404 Page
   @404-return-home
   Scenario: Return home button works from 404 page
     When I navigate to a broken URL "/this-page-does-not-exist-xyz"
-    And I click the "Return to Home" button
+    And I click the 404 page "Return to Home" button
     Then I should be redirected to the home page
     And the URL should be "https://staging.pricefirst.com"
-     
-     

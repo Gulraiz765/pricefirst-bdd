@@ -24,6 +24,7 @@ class CheckoutPage {
     // Buttons
     this.completeOrderButton = page.getByRole('button', { name: 'Complete Your Order' });
   }
+  
 
   async waitForCheckoutPage() {
     await this.page.waitForURL(/.*checkout.*/, { timeout: 15000 });

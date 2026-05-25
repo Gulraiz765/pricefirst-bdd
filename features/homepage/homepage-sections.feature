@@ -56,3 +56,7 @@ Scenario: Only one FAQ stays open at a time
     When I go back to home page
     When I click "Terms & Conditions" in the footer
     Then I should see the terms and conditions page
+
+
+
+  

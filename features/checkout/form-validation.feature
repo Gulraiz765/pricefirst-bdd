@@ -39,3 +39,7 @@ Scenario: Checkout form - valid data submits successfully
   When I fill the checkout form with valid details
   And I click the Complete Your Order button
   Then I should see the order confirmation
+
+
+
+  
