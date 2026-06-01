@@ -1,6 +1,12 @@
 {
   "baseUrl": "https://staging.pricefirst.com",
 
+  "endpoints": {
+    "checkout": "/api/checkout-session",
+    "search": "/api/collections/apple/products",
+    "offers": "/api/offers"
+  },
+
   "checkout": {
     "validPayload": {
       "fullName": "Test User",
