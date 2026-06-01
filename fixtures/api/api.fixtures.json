@@ -1,0 +1,63 @@
+{
+  "baseUrl": "https://staging.pricefirst.com",
+
+  "checkout": {
+    "validPayload": {
+      "fullName": "Test User",
+      "email": "test.user@example.com",
+      "phone": "07700900123",
+      "postCode": "M8 8FX",
+      "address": "55 Bury New Road, Manchester",
+      "city": "Manchester",
+      "paymentMethod": "bank",
+      "sortCode": "123456",
+      "accountNumber": "12345678",
+      "deviceSlug": "apple-iphone-13",
+      "condition": "Excellent",
+      "network": "Unlocked",
+      "storage": "128GB"
+    },
+    "invalidPayloads": {
+      "missingName":    { "email": "test@example.com", "phone": "07700900123", "postCode": "M8 8FX", "paymentMethod": "bank", "sortCode": "123456", "accountNumber": "12345678" },
+      "missingEmail":   { "fullName": "Test User",     "phone": "07700900123", "postCode": "M8 8FX", "paymentMethod": "bank", "sortCode": "123456", "accountNumber": "12345678" },
+      "missingPhone":   { "fullName": "Test User", "email": "test@example.com", "postCode": "M8 8FX", "paymentMethod": "bank", "sortCode": "123456", "accountNumber": "12345678" }
+    }
+  },
+
+  "schemas": {
+    "offer": {
+      "type": "object",
+      "required": ["buyerName", "price", "currency"],
+      "properties": {
+        "buyerName":  { "type": "string" },
+        "price":      { "type": "number", "minimum": 0 },
+        "currency":   { "type": "string" },
+        "isTopOffer": { "type": "boolean" }
+      }
+    },
+    "checkoutSuccess": {
+      "type": "object",
+      "required": ["orderId", "confirmationNumber"],
+      "properties": {
+        "orderId":            { "type": "string" },
+        "confirmationNumber": { "type": "string" },
+        "status":             { "type": "string" }
+      }
+    },
+    "searchResult": {
+      "type": "object",
+      "required": ["title", "slug", "price"],
+      "properties": {
+        "title": { "type": "string" },
+        "slug":  { "type": "string" },
+        "price": { "type": "number" }
+      }
+    }
+  },
+
+  "devices": [
+    { "slug": "apple-iphone-13",    "keyword": "iPhone 13",       "brand": "Apple"   },
+    { "slug": "samsung-galaxy-s23", "keyword": "Samsung S23",     "brand": "Samsung" },
+    { "slug": "google-pixel-7",     "keyword": "Google Pixel 7",  "brand": "Google"  }
+  ]
+}
