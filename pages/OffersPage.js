@@ -122,7 +122,7 @@ class OffersPage {
 
   async getTopOfferPrice() {
     await this.page.waitForTimeout(800);
-b
+
     // Strategy 1: Highest Price Offer badge
     try {
       const badge = this.page.locator(':text("Highest Price Offer")');

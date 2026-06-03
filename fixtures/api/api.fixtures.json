@@ -30,7 +30,7 @@
     }
   },
 
-  "schemas": {
+  "schemas": { 
     "offer": {
       "type": "object",
       "required": ["buyerName", "price", "currency"],

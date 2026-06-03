@@ -860,3 +860,14 @@ Then('I should be redirected away from the confirmation page', async function ()
   }
 });
 
+When('I click the Complete Your Order button', async function () {
+  console.log('🔘 Clicking Complete Your Order button...');
+  this.checkoutPage = this.checkoutPage || new CheckoutPage(this.page);
+  
+  const completeBtn = this.page.getByRole('button', { name: 'Complete Your Order' });
+  await completeBtn.waitFor({ state: 'visible', timeout: 15000 });
+  await completeBtn.click();
+  
+  await this.page.waitForTimeout(5000);
+  console.log(`✅ Complete Your Order clicked — URL: ${this.page.url()}`);
+});

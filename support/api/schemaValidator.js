@@ -1,39 +1,37 @@
-// support/api/schemaValidator.js
-// Validates API response bodies against JSON schemas from fixtures/api/api.fixtures.json
-// Uses Ajv (already available via npm) for fast, detailed validation errors.
-
 const Ajv = require('ajv');
-const fixtures = require('../../fixtures/api/api.fixtures.json');
-
 const ajv = new Ajv({ allErrors: true });
 
-/**
- * Validate data against a named schema from api.fixtures.json
- * @param {string} schemaName  - key from fixtures.schemas  e.g. 'offer'
- * @param {object} data        - the response body to validate
- * @returns {{ valid: boolean, errors: string[] }}
- */
-function validate(schemaName, data) {
-  const schema = fixtures.schemas[schemaName];
-  if (!schema) throw new Error(`Schema "${schemaName}" not found in api.fixtures.json`);
-
-  const isValid = ajv.validate(schema, data);
-  const errors  = isValid ? [] : (ajv.errors || []).map(e => `${e.instancePath} ${e.message}`);
-  return { valid: isValid, errors };
-}
-
-/**
- * Validate every item in an array against a named schema.
- * Returns the first failure, or { valid: true } if all pass.
- */
-function validateArray(schemaName, items) {
-  for (let i = 0; i < items.length; i++) {
-    const result = validate(schemaName, items[i]);
-    if (!result.valid) {
-      return { valid: false, errors: [`Item [${i}]: ${result.errors.join(', ')}`] };
+const schemas = {
+  offer: {
+    type: "object",
+    required: ["buyerName", "price", "currency"],
+    properties: {
+      buyerName: { type: "string" },
+      price: { type: "number", minimum: 0 },
+      currency: { type: "string" },
+      isTopOffer: { type: "boolean" }
     }
   }
-  return { valid: true, errors: [] };
+};
+
+function validate(schemaName, data) {
+  const schema = schemas[schemaName];
+  if (!schema) {
+    return { valid: false, errors: [`Schema '${schemaName}' not found`] };
+  }
+  const validateFn = ajv.compile(schema);
+  const valid = validateFn(data);
+  return { valid, errors: validateFn.errors || [] };
+}
+
+function validateArray(schemaName, dataArray) {
+  if (!Array.isArray(dataArray)) {
+    return { valid: false, errors: ['Data is not an array'] };
+  }
+  const results = dataArray.map(item => validate(schemaName, item));
+  const valid = results.every(r => r.valid);
+  const errors = results.filter(r => !r.valid).flatMap(r => r.errors);
+  return { valid, errors };
 }
 
 module.exports = { validate, validateArray };

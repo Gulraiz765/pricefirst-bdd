@@ -1,13 +1,8 @@
-// support/api/apiClient.js
-// Centralised HTTP client for all API tests.
-
 const axios = require('axios');
-require('dotenv').config();
 
 const BASE_URL = process.env.BASE_URL || 'https://staging.pricefirst.com';
 const TIMEOUT = parseInt(process.env.API_TIMEOUT || '10000', 10);
 
-// ─── create a shared axios instance ──────────────────────────────────────────
 const apiClient = axios.create({
   baseURL: BASE_URL,
   timeout: TIMEOUT,
@@ -17,7 +12,6 @@ const apiClient = axios.create({
   }
 });
 
-// ─── request interceptor: log every outgoing call ────────────────────────────
 apiClient.interceptors.request.use((config) => {
   console.log(`\n🌐 API REQUEST  → ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
   if (config.params && Object.keys(config.params).length) {
@@ -29,7 +23,6 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// ─── response interceptor: log status ────────────────────────────────────────
 apiClient.interceptors.response.use(
   (response) => {
     console.log(`✅ API RESPONSE ← ${response.status} ${response.config.url}`);
@@ -38,9 +31,6 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response) {
       console.log(`⚠️  API ERROR   ← ${error.response.status} ${error.config?.url}`);
-      if (error.response.data) {
-        console.log(`   Error details:`, JSON.stringify(error.response.data).substring(0, 200));
-      }
       return error.response;
     }
     console.error('❌ Network error:', error.message);
@@ -48,86 +38,41 @@ apiClient.interceptors.response.use(
   }
 );
 
-// ─── Search & Categories APIs ────────────────────────────────────────────────
-
 async function searchProducts(query, limit = 50, from = 0) {
   console.log(`🔍 Searching products with query: "${query}"`);
-  return apiClient.get('/api/products', { 
+  return apiClient.get('/api/products', {
     params: { query, limit, from }
   });
 }
 
-async function getCategories() {
-  console.log(`📂 Fetching all categories`);
-  return apiClient.get('/api/categories');
+// NOTE: Offers are server-side rendered (Next.js RSC).
+// There is no standalone /api/offers endpoint.
+// Offers are embedded in the product page HTML/RSC response.
+async function getOffers(slug, condition = null) {
+  console.log(`💲 Fetching offers for device: ${slug}`);
+  const params = { slug };
+  if (condition) params.condition = condition;
+  return apiClient.get('/api/offers', { params });
 }
 
-async function getCategoriesWithBrandsAndProducts() {
-  console.log(`📦 Fetching categories with brands and products`);
-  return apiClient.get('/api/categories/brands/products');
-}
-
-async function getProductsByCategory(categorySlug, limit = 50, from = 0) {
-  console.log(`📱 Fetching products for category: ${categorySlug}`);
-  return apiClient.get(`/api/products/category/${categorySlug}`, {
-    params: { limit, from }
-  });
-}
-
-async function getProductsByBrand(brandSlug, limit = 50, from = 0) {
-  console.log(`🏷️  Fetching products for brand: ${brandSlug}`);
-  return apiClient.get(`/api/products/brand/${brandSlug}`, {
-    params: { limit, from }
-  });
-}
-
-async function getBlogs() {
-  console.log(`📝 Fetching all blogs`);
-  return apiClient.get('/api/blogs');
-}
-
-async function getBlogCategories() {
-  console.log(`📚 Fetching blog categories`);
-  return apiClient.get('/api/blog-categories');
-}
-
-// ─── Checkout Session API ───────────────────────────────────────────────────
-
-/**
- * POST /api/checkout-session - Save or update guest checkout session
- * @param {string} offerId - Offer ID (e.g., "60d0fe4f5311236168a109cc")
- * @param {object} checkoutData - Checkout data object
- */
-async function createCheckoutSession(offerId, checkoutData) {
-  console.log(`💳 Creating checkout session with offerId: ${offerId}`);
-  const payload = {
-    offerId: offerId,
-    data: checkoutData
-  };
+// FIXED: payload is { data: { product, vendor, variant } }
+// offerId is no longer a separate field
+async function createCheckoutSession(checkoutData) {
+  console.log(`💳 Creating checkout session`);
+  const payload = { data: checkoutData };
   return apiClient.post('/api/checkout-session', payload);
 }
 
-/**
- * GET /api/checkout-session - Retrieve checkout session
- * @param {string} resumeToken - Resume token from previous session
- */
-async function getCheckoutSession(resumeToken) {
-  console.log(`🔑 Retrieving checkout session with token`);
-  return apiClient.get('/api/checkout-session', {
-    params: { resumeToken }
-  });
+// FIXED: session is retrieved by token (not resumeToken)
+async function getCheckoutSession(token) {
+  console.log(`🔑 Retrieving checkout session`);
+  return apiClient.get('/api/checkout-session', { params: { token } });
 }
 
-// Export all functions
 module.exports = {
   apiClient,
   searchProducts,
-  getCategories,
-  getCategoriesWithBrandsAndProducts,
-  getProductsByCategory,
-  getProductsByBrand,
-  getBlogs,
-  getBlogCategories,
+  getOffers,
   createCheckoutSession,
   getCheckoutSession
 };
